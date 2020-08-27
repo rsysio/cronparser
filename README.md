@@ -14,6 +14,9 @@ This cli tool will parse a cron string e.g.
 This tool will not parse single word crons like `@hourly`, `@monthly` etc.. 
 
 ## Run
+
+The tool only uses the standard libary, so you don't need go.mod or any dependency management
+
 - build the binary
 ```
 make build
