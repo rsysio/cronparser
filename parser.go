@@ -101,7 +101,7 @@ func (f *Field) Parser() ([]int, error) {
 
 	// check if it's a wildcard
 	if f.raw == "*" {
-		return rangeGenerator(f.kind.min, f.kind.max, 1), nil
+		return rangeGenerator(f.kind.min, f.kind.max, 1, &f.kind), nil
 	}
 
 	// every X mimutes/hours "*/15"
@@ -112,7 +112,7 @@ func (f *Field) Parser() ([]int, error) {
 			return nil, err
 		}
 
-		return rangeGenerator(valInt, f.kind.max, valInt), nil
+		return rangeGenerator(valInt, f.kind.max, valInt, &f.kind), nil
 	}
 
 	// series of numbers "5,6,7"
@@ -136,7 +136,7 @@ func (f *Field) Parser() ([]int, error) {
 			return nil, fmt.Errorf("Invalid input %s: %s\n", f.kind.name, f.raw)
 		}
 
-		return rangeGenerator(valInt[0], valInt[1], 1), nil
+		return rangeGenerator(valInt[0], valInt[1], 1, &f.kind), nil
 	}
 
 	return nil, fmt.Errorf("Invalid input %s: %s\n", f.kind.name, f.raw)
@@ -162,14 +162,27 @@ func isInt(v string) bool {
 	return true
 }
 
-func rangeGenerator(start, stop, step int) []int {
+func rangeGenerator(start, stop, step int, valRange *valueRanges) []int {
 
 	var s []int
-	for i := start; i <= stop; i = i + step {
+
+	if start < stop {
+		for i := start; i <= stop; i = i + step {
+			s = append(s, i)
+		}
+		return s
+	}
+
+	for i := start; i <= valRange.max; i = i + step {
+		s = append(s, i)
+	}
+
+	for i := valRange.min; i <= stop; i = i + step {
 		s = append(s, i)
 	}
 
 	return s
+
 }
 
 func strConverter(strSlice []string) ([]int, error) {

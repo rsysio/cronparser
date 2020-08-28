@@ -1,5 +1,5 @@
 BINARY := cronparser
-TEST_CRON ?= "*/15 0 1,15 * 1-5 /usr/bin/find"
+TEST_CRON ?= "*/15 0 1,15 * 5-2 /usr/bin/find"
 
 .PHONY: build
 build:
